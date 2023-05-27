@@ -34,7 +34,7 @@ function performSearch() {
 }
 
 function performSearchRequest(query, includeImages, startIndex) {
-    var apiKey = "AIzaSyAZmRMINN9hMq7U_8FdwFP4rxPn8rutpzs"; // Ganti dengan API key Google Custom Search Anda
+    var apiKey = "AIzaSyC6tjN2s6SfdOF-iyGUOaQXtpfE1-hJvhQ"; // Ganti dengan API key Google Custom Search Anda
     var searchEngineId = "177d3948ae59447e9"; // Ganti dengan ID mesin pencarian Google Anda
 
     var url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${searchEngineId}&q=${encodeURIComponent(query)}&start=${startIndex}`;
@@ -80,6 +80,7 @@ function displayResults(data) {
     } else {
         totalResults = 0;
     }
+    updateNavigationButtons();
 }
 
 function updateNavigationButtons() {
@@ -97,11 +98,16 @@ function updateNavigationButtons() {
 }
 
 function prevPage() {
-    currentPage--;
-    performSearch();
+    if (currentPage > 1) {
+        currentPage--;
+        performSearch();
+    }
 }
 
 function nextPage() {
-    currentPage++;
-    performSearch();
+    var maxPages = Math.ceil(totalResults / resultsPerPage);
+    if (currentPage < maxPages) {
+        currentPage++;
+        performSearch();
+    }
 }
