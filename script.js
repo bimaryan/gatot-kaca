@@ -29,6 +29,7 @@ function performSearch() {
             updateNavigationButtons();
         })
         .catch(function(error) {
+            displayVideoFallback();
             console.log("Error:", error);
         });
 }
@@ -49,7 +50,20 @@ function performSearchRequest(query, includeImages, startIndex) {
                 throw new Error("Request failed");
             }
             return response.json();
+        })
+
+        .catch(function(error) {
+            console.log("Error:", error);
+            displayErrorMessage("Failed to fetch search results. Please try again later.");
+            throw error;
         });
+}
+
+function displayErrorMessage(message) {
+    resultsContainer.innerHTML = "";
+    var errorParagraph = document.createElement("p");
+    errorParagraph.textContent = message;
+    resultsContainer.appendChild(errorParagraph);
 }
 
 function displayResults(data) {
@@ -110,4 +124,11 @@ function nextPage() {
         currentPage++;
         performSearch();
     }
+}
+
+function displayVideoFallback() {
+    resultsContainer.innerHTML = '<video width="300" height="150" controls>' +
+        '<source src="anda_telah_offline.mp4" type="video/mp4">' +
+        'Your browser does not support the video tag.' +
+        '</video>';
 }
