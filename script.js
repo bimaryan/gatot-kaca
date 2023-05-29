@@ -4,6 +4,7 @@ var resultsContainer = document.getElementById("results");
 var prevButton = document.getElementById("prev-button");
 var nextButton = document.getElementById("next-button");
 
+
 var searchQuery = "";
 var currentPage = 1;
 var totalResults = 0;
@@ -14,6 +15,10 @@ function search() {
     currentPage = 1;
     performSearch();
 }
+
+categorySelect.addEventListener("change", function() {
+    performSearch();
+});
 
 function performSearch() {
     var includeImages = includeImagesCheckbox.checked;
@@ -32,6 +37,7 @@ function performSearch() {
             displayVideoFallback();
             console.log("Error:", error);
         });
+    
 }
 
 function performSearchRequest(query, includeImages, startIndex) {
@@ -67,7 +73,7 @@ function displayErrorMessage(message) {
 }
 
 function displayResults(data) {
-    if (data.items) {
+    if (data.items && data.items.length > 0) {
         data.items.forEach(function(item) {
             var li = document.createElement("li");
             var a = document.createElement("a");
@@ -79,6 +85,12 @@ function displayResults(data) {
                 var img = document.createElement("img");
                 img.src = item.pagemap.cse_image[0].src;
                 li.appendChild(img);
+            } else if (item.pagemap && item.pagemap.videoobject && item.pagemap.videoobject.length > 0) {
+                var video = document.createElement("iframe");
+                video.src = item.pagemap.videoobject[0].embedurl;
+                video.width = "300";
+                video.height = "200";
+                li.appendChild(video);
             }
 
             var p = document.createElement("p");
@@ -87,6 +99,12 @@ function displayResults(data) {
 
             resultsContainer.appendChild(li);
         });
+    } else {
+        // Menampilkan pesan jika tidak ada hasil pencarian
+        resultsContainer.innerHTML = "";
+        var noResultsMessage = document.createElement("p");
+        noResultsMessage.textContent = "No results found.";
+        resultsContainer.appendChild(noResultsMessage);
     }
 
     if (data.queries && data.queries.request && data.queries.request.length > 0) {
@@ -124,11 +142,4 @@ function nextPage() {
         currentPage++;
         performSearch();
     }
-}
-
-function displayVideoFallback() {
-    resultsContainer.innerHTML = '<video width="300" height="150" controls>' +
-        '<source src="anda_telah_offline.mp4" type="video/mp4">' +
-        'Your browser does not support the video tag.' +
-        '</video>';
-}
+} 
