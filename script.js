@@ -16,10 +16,6 @@ function search() {
     performSearch();
 }
 
-categorySelect.addEventListener("change", function() {
-    performSearch();
-});
-
 function performSearch() {
     var includeImages = includeImagesCheckbox.checked;
     var startIndex = (currentPage - 1) * resultsPerPage + 1;
@@ -34,7 +30,6 @@ function performSearch() {
             updateNavigationButtons();
         })
         .catch(function(error) {
-            displayVideoFallback();
             console.log("Error:", error);
         });
     
@@ -85,12 +80,6 @@ function displayResults(data) {
                 var img = document.createElement("img");
                 img.src = item.pagemap.cse_image[0].src;
                 li.appendChild(img);
-            } else if (item.pagemap && item.pagemap.videoobject && item.pagemap.videoobject.length > 0) {
-                var video = document.createElement("iframe");
-                video.src = item.pagemap.videoobject[0].embedurl;
-                video.width = "300";
-                video.height = "200";
-                li.appendChild(video);
             }
 
             var p = document.createElement("p");
